@@ -1,0 +1,46 @@
+package com.brentonpoke.toornamentclient.model.request;
+
+import com.brentonpoke.toornamentclient.model.Custom.CustomFields;
+import com.brentonpoke.toornamentclient.model.Participant;
+import com.brentonpoke.toornamentclient.model.enums.Sort;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Singular;
+
+@Getter
+@Setter
+@Builder
+public class ParticipantQuery {
+
+    private String name;
+    private String email;
+
+    @Builder.Default
+    private Sort sort = Sort.ASCENDING;
+
+    @JsonAlias("custom_user_identifier")
+    private String customUserIdentifier;
+
+    @Singular("lineup")
+    private List<Participant> lineup;
+
+    @JsonProperty("custom_fields")
+    private CustomFields customFields;
+
+    @Override
+    public String toString() {
+        try {
+            return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+}
