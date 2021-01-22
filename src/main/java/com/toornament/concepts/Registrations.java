@@ -1,6 +1,7 @@
 package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Registration;
 import com.toornament.model.enums.Scope;
@@ -31,7 +32,9 @@ public class Registrations extends Concept {
     public Registration register(RegistrationQuery registration) {
         HttpUrl.Builder urlBuilder = new HttpUrl.Builder();
 
-        logger.debug("Scopes {}", client.getScope());
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("Scopes {}", client.getScope());
+
         if (client.getScope().contains(Scope.ORGANIZER_REGISTRATION)) {
 
             urlBuilder.scheme("https")
@@ -51,7 +54,8 @@ public class Registrations extends Concept {
 
         }
 
-        logger.debug("url: {}", urlBuilder.build().toString());
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("url: {}", urlBuilder.build().toString());
 
         RequestBody body =
             RequestBody.create(MediaType.parse("application/json"), registration.toString());
@@ -63,7 +67,7 @@ public class Registrations extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.constructType(Registration.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got Exception posting Participant");
         }
     }
@@ -83,7 +87,7 @@ public class Registrations extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.constructType(Registration.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got Exception updating Participant");
         }
     }
@@ -130,7 +134,7 @@ public class Registrations extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.constructType(Registration.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got Exception posting Participant");
         }
     }
@@ -211,7 +215,7 @@ public class Registrations extends Concept {
                 responseBody,
                 mapper.getTypeFactory().constructCollectionType(List.class, Registration.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got Exception getting Participants");
         }
     }

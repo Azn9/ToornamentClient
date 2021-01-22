@@ -67,7 +67,7 @@ public class Rounds extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class, Round.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOExcption getting Rounds");
         }
     }
@@ -101,7 +101,7 @@ public class Rounds extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, Round.class);
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Couldn't get Round with id: " + roundID);
         }
     }

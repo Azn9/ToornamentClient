@@ -1,6 +1,7 @@
 package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Stream;
 import com.toornament.model.Video;
@@ -46,14 +47,17 @@ public class Streams extends Concept {
                 List.class,
                 Stream.class));
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Couldn't retrieve streams");
         }
     }
 
     public Stream createStream(Video query) {
         Builder urlBuilder = new Builder();
-        logger.debug("Scopes: {}", client.getScope().toString());
+
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("Scopes: {}", client.getScope().toString());
+
         if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             urlBuilder
                 .scheme("https")
@@ -75,7 +79,7 @@ public class Streams extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Stream.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException creating stream");
         }
     }
@@ -103,7 +107,7 @@ public class Streams extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Stream.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting stream");
         }
     }
@@ -132,7 +136,7 @@ public class Streams extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Stream.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException creating stream");
         }
     }
@@ -182,7 +186,7 @@ public class Streams extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructCollectionType(List.class, String.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting match streams");
         }
     }
@@ -211,7 +215,7 @@ public class Streams extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructCollectionType(List.class, String.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException updating match streams");
         }
     }

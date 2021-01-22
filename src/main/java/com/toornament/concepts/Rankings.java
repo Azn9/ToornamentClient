@@ -1,6 +1,7 @@
 package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.RankingItem;
 import com.toornament.model.enums.Scope;
@@ -42,7 +43,9 @@ public class Rankings extends Concept {
                 .addQueryParameter("participant_ids", StringUtils.join(query.getParticipantIDs(), ","))
                 .addQueryParameter("custom_user_identifiers", StringUtils.join(query.getCustomUserIdentifiers(), ","));
         }
-        logger.debug("url: {}", urlBuilder.build().toString());
+
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("url: {}", urlBuilder.build().toString());
 
         Request request = client.getRequestBuilder()
             .get()

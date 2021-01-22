@@ -1,6 +1,7 @@
 package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Participant;
 import com.toornament.model.enums.Scope;
@@ -38,7 +39,7 @@ public class Participants extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class, Participant.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting Participants");
         }
     }
@@ -54,7 +55,8 @@ public class Participants extends Concept {
             .addEncodedPathSegment("participants")
             .addEncodedPathSegment(participantID);
 
-        logger.debug("url: {}", urlBuilder.build().toString());
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("url: {}", urlBuilder.build().toString());
 
         Request request = client.getAuthenticatedRequestBuilder()
             .get()
@@ -68,7 +70,10 @@ public class Participants extends Concept {
 
     public List<Participant> getMyTeamParticipants(Map<String, String> header, Map<String, String> paramsMap) {
         Builder urlBuilder = new Builder();
-        logger.debug("Scopes: {}", client.getScope().toString());
+
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("Scopes: {}", client.getScope().toString());
+
         if (client.getScope().contains(Scope.MANAGE_PARTICIPANTS)) {
             urlBuilder.scheme("https")
                 .host("api.toornament.com")
@@ -145,7 +150,10 @@ public class Participants extends Concept {
 
     private Builder participantHelper(String id) {
         Builder url = new Builder();
-        logger.debug("Scopes: {}", client.getScope().toString());
+
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("Scopes: {}", client.getScope().toString());
+
         if (client.getScope().contains(Scope.MANAGE_PARTICIPANTS)) {
             url
                 .scheme("https")
@@ -175,7 +183,7 @@ public class Participants extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Participant.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException(s);
         }
     }
@@ -186,7 +194,7 @@ public class Participants extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructCollectionType(List.class, Participant.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting Participants");
         }
     }

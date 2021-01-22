@@ -1,6 +1,7 @@
 package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.User;
 import com.toornament.model.enums.Scope;
@@ -17,7 +18,10 @@ public class Users extends Concept {
 
     public User getUser() {
         Builder url = new Builder();
-        logger.debug("Scopes: {}", client.getScope().toString());
+
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("Scopes: {}", client.getScope().toString());
+
         if (client.getScope().contains(Scope.USER_INFO)) {
             url.scheme("https")
                 .host("api.toornament.com")
@@ -36,7 +40,7 @@ public class Users extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, User.class);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Couldn't get user");
         }
     }

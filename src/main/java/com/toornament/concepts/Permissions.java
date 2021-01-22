@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Permission;
 import com.toornament.model.enums.Attribute;
@@ -41,7 +42,9 @@ public class Permissions extends Concept {
                 .addEncodedPathSegment("permissions");
         }
 
-        logger.debug("url: {}", urlBuilder.build().toString());
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("url: {}", urlBuilder.build().toString());
+
         Request request = client.getAuthenticatedRequestBuilder().get().url(urlBuilder.build()).build();
         try {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
@@ -51,7 +54,7 @@ public class Permissions extends Concept {
                     .getTypeFactory()
                     .constructCollectionType(List.class, Permission.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting Permissions");
         }
     }
@@ -76,7 +79,7 @@ public class Permissions extends Concept {
                 responseBody,
                 mapper.getTypeFactory().constructType(com.toornament.model.Permission.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting Permission.");
         }
     }
@@ -101,7 +104,7 @@ public class Permissions extends Concept {
                 responseBody,
                 mapper.getTypeFactory().constructType(Permission.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Error creating new permission");
         }
     }
@@ -140,7 +143,7 @@ public class Permissions extends Concept {
                 responseBody,
                 mapper.getTypeFactory().constructType(Permission.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Error updating new permission");
         }
     }

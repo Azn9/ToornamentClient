@@ -1,40 +1,26 @@
 package com.toornament;
 
-import com.toornament.concepts.Disciplines;
-import com.toornament.concepts.FinalStandings;
-import com.toornament.concepts.Groups;
-import com.toornament.concepts.MatchGames;
-import com.toornament.concepts.MatchReports;
-import com.toornament.concepts.Matches;
-import com.toornament.concepts.Participants;
-import com.toornament.concepts.Permissions;
-import com.toornament.concepts.Registrations;
-import com.toornament.concepts.Rounds;
-import com.toornament.concepts.Streams;
-import com.toornament.concepts.Tournaments;
-import com.toornament.concepts.Users;
-import com.toornament.concepts.Webhooks;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.toornament.concepts.*;
+import com.toornament.model.Match;
 import com.toornament.model.TournamentDetails;
 import com.toornament.model.enums.Scope;
 import com.toornament.model.request.ApiTokenRequest;
 import com.toornament.model.response.ApiTokenResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.Getter;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ToornamentClient {
+
+    public static LoggerLevel loggerLevel = LoggerLevel.DEBUG;
 
     private final OkHttpClient httpClient;
     private final String       apiKey;
@@ -96,8 +82,12 @@ public class ToornamentClient {
         return new FinalStandings(this);
     }
 
-    public MatchGames getMatchGames() {
-        return new MatchGames(this);
+    public MatchGames getMatchGames(String tournamentId, String matchId) {
+        return new MatchGames(this, tournamentId, matchId);
+    }
+
+    public MatchGames getMatchGames(Match match) {
+        return new MatchGames(this, match);
     }
 
     public Permissions getPermissions(String tournamentID) {
@@ -176,4 +166,12 @@ public class ToornamentClient {
         }
         return null;
     }
+
+    public enum LoggerLevel {
+
+        DEBUG,
+        NONE;
+
+    }
+
 }

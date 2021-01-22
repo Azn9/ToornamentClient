@@ -1,6 +1,7 @@
 package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Group;
 import com.toornament.model.request.GroupsQuery;
@@ -39,7 +40,8 @@ public class Groups extends Concept {
         if (!parameters.getStageNumbers().isEmpty())
             url.addQueryParameter("stage_numbers", StringUtils.join(parameters.getStageNumbers(), ","));
 
-        logger.debug("url: {}", url.build().toString());
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("url: {}", url.build().toString());
 
         Request request =
             client
@@ -53,7 +55,7 @@ public class Groups extends Concept {
             return mapper.readValue(
                 responseBody, mapper.getTypeFactory().constructCollectionType(List.class, Group.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting Groups");
         }
     }
@@ -75,8 +77,8 @@ public class Groups extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructType(Group.class));
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
+            throw new ToornamentException("Got IOException getting Group");
         }
-        return null;
     }
 }

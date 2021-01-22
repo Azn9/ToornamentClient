@@ -1,6 +1,7 @@
 package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Reports;
 import com.toornament.model.Reports.Report;
@@ -44,7 +45,8 @@ public class MatchReports extends Concept {
             urlBuilder.addQueryParameter(params.getKey(), params.getValue());
         }
 
-        logger.debug("url: {}", urlBuilder.build().toString());
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("url: {}", urlBuilder.build().toString());
 
         Request request = client.getAuthenticatedRequestBuilder()
             .get()
@@ -56,7 +58,7 @@ public class MatchReports extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructCollectionType(List.class, Reports.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting Reports");
         }
 
@@ -87,7 +89,7 @@ public class MatchReports extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Reports.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOExcption getting Report");
         }
     }
@@ -117,7 +119,7 @@ public class MatchReports extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Reports.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException creating Report");
         }
     }
@@ -147,7 +149,7 @@ public class MatchReports extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Reports.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException updating Report");
         }
     }

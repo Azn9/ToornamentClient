@@ -1,6 +1,7 @@
 package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.MatchDetails;
 import com.toornament.model.TournamentDetails;
@@ -21,7 +22,8 @@ import org.slf4j.LoggerFactory;
 public class Matches extends Concept {
 
     private static final DateTimeFormatter RFC_3339 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
-    private final        TournamentDetails tournament;
+
+    private final TournamentDetails tournament;
 
     public Matches(ToornamentClient client, TournamentDetails tournament) {
         super(client);
@@ -31,7 +33,10 @@ public class Matches extends Concept {
 
     public List<MatchDetails> getMatches(MatchQuery parameter, String headers) {
         HttpUrl.Builder urlBuilder = new HttpUrl.Builder();
-        logger.debug("Scopes: {}", client.getScope().toString());
+
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("Scopes: {}", client.getScope().toString());
+
         if (client.getScope().contains(Scope.ORGANIZER_RESULT)) {
             urlBuilder
                 .scheme("https")
@@ -66,7 +71,10 @@ public class Matches extends Concept {
             urlBuilder.addEncodedQueryParameter("custom_user_identifier", parameter.getCustomUserIdentifier());
             urlBuilder.addQueryParameter("sort", parameter.getSort().getName());
         }
-        logger.debug("url: {}", urlBuilder.build().toString());
+
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("url: {}", urlBuilder.build().toString());
+
         Request request = client.getAuthenticatedRequestBuilder()
             .get()
             .url(urlBuilder.build())
@@ -76,7 +84,7 @@ public class Matches extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class, MatchDetails.class));
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting matches");
         }
     }
@@ -95,7 +103,10 @@ public class Matches extends Concept {
                 .addPathSegment(matchId);
 
         }
-        logger.debug("url: {}", urlBuilder.build().toString());
+
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("url: {}", urlBuilder.build().toString());
+
         RequestBody body = RequestBody.create(MediaType.parse("Application/Json"), details.toString());
         Request request = client.getRequestBuilder().patch(body).build();
         return matchDetailsHelper(request);
@@ -125,7 +136,7 @@ public class Matches extends Concept {
             return mapper
                 .readValue(responseBody, mapper.getTypeFactory().constructType(MatchDetails.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting match");
         }
     }

@@ -2,6 +2,7 @@ package com.toornament.concepts;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Standings;
 import com.toornament.model.enums.Scope;
@@ -37,11 +38,12 @@ public class FinalStandings extends Concept {
             .addEncodedPathSegment("standings");
 
         if (scope.equals("viewer")) {
-
-            logger.debug("url: {}", urlBuilder.build().toString());
+            if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+                logger.debug("url: {}", urlBuilder.build().toString());
             requestBuilder = client.getRequestBuilder();
         } else {
-            logger.debug("url: {}", urlBuilder.build().toString());
+            if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+                logger.debug("url: {}", urlBuilder.build().toString());
             requestBuilder = client.getAuthenticatedRequestBuilder();
         }
 

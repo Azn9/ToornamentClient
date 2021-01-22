@@ -32,7 +32,7 @@ public class Tournaments extends Concept {
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class,
                 Tournament.class));
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Couldn't retrieve tournaments");
         }
     }
@@ -84,7 +84,7 @@ public class Tournaments extends Concept {
             String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, TournamentDetails.class);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Couldn't get tournament with id: " + id);
         }
     }
@@ -146,7 +146,7 @@ public class Tournaments extends Concept {
                 responseBody,
                 mapper.getTypeFactory().constructCollectionType(List.class, Custom.class));
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Couldn't retrieve custom fields");
         }
     }
@@ -173,7 +173,7 @@ public class Tournaments extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Custom.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException creating custom field");
         }
 
@@ -202,7 +202,7 @@ public class Tournaments extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Custom.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException creating custom field");
         }
     }
@@ -230,7 +230,7 @@ public class Tournaments extends Concept {
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Custom.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException updating custom field");
         }
     }

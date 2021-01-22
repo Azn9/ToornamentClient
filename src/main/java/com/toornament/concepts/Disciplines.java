@@ -2,6 +2,7 @@ package com.toornament.concepts;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Discipline;
 import com.toornament.model.DisciplineDetails;
@@ -40,6 +41,7 @@ public class Disciplines extends Concept {
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class,
                 Discipline.class));
         } catch (IOException e) {
+            if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
             logger.error(e.getMessage());
             throw new ToornamentException("Couldn't retrieve disciplines");
         }
@@ -63,6 +65,7 @@ public class Disciplines extends Concept {
             mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructType(DisciplineDetails.class));
         } catch (IOException e) {
+            if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
             logger.error(e.getMessage());
             throw new ToornamentException("Couldn't retrieve discipline with id: " + id);
         }

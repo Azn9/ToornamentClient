@@ -1,6 +1,7 @@
 package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
+import com.toornament.ToornamentClient.LoggerLevel;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Game;
 import com.toornament.model.Match;
@@ -17,12 +18,16 @@ import org.slf4j.LoggerFactory;
 
 public class MatchGames extends Concept {
 
-    private String          tournamentID;
+    private final String tournamentID;
+
     private String          matchID;
     private HttpUrl.Builder urlBuilder;
 
-    public MatchGames(ToornamentClient client) {
+    public MatchGames(ToornamentClient client, String tournamentId, String matchID) {
         super(client);
+        this.matchID = matchID;
+        this.tournamentID = tournamentId;
+        logger = LoggerFactory.getLogger(this.getClass());
     }
 
     public MatchGames(ToornamentClient client, Match match) {
@@ -37,11 +42,10 @@ public class MatchGames extends Concept {
         return getGameHelper(urlBuilder);
     }
 
-    public List<Game> getGames() {
-
+    public List<Game> getGames(String headers) {
         urlBuilder = new HttpUrl.Builder();
-        if (client.getScope().contains(Scope.ORGANIZER_RESULT)) {
 
+        if (client.getScope().contains(Scope.ORGANIZER_RESULT)) {
             urlBuilder
                 .scheme("https")
                 .host("api.toornament.com")
@@ -54,11 +58,13 @@ public class MatchGames extends Concept {
                 .addEncodedPathSegment("games");
         }
 
-        logger.debug("url: {}", urlBuilder.build().toString());
+        if (ToornamentClient.loggerLevel == LoggerLevel.DEBUG)
+            logger.debug("url: {}", urlBuilder.build().toString());
 
         Request request = client.getRequestBuilder()
             .get()
             .url(urlBuilder.build())
+            .addHeader("Range", headers)
             .build();
 
         try {
@@ -66,7 +72,7 @@ public class MatchGames extends Concept {
             return mapper
                 .readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class, Game.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException getting games");
         }
     }
@@ -81,7 +87,7 @@ public class MatchGames extends Concept {
             return mapper
                 .readValue(responseBody, mapper.getTypeFactory().constructType(Game.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOExcption getting game");
         }
     }
@@ -98,7 +104,7 @@ public class MatchGames extends Concept {
             return mapper
                 .readValue(responseBody, mapper.getTypeFactory().constructType(Game.class));
         } catch (IOException | NullPointerException e) {
-            logger.error(e.getMessage());
+            e.printStackTrace();
             throw new ToornamentException("Got IOException updating game");
         }
     }
