@@ -1,4 +1,4 @@
-[![master](https://jitpack.io/v/Azn9/ToornamentClient.svg)](https://jitpack.io/#BrentonPoke/ToornamentClient)
+[![master](https://jitpack.io/v/Azn9/ToornamentClient.svg)](https://jitpack.io/#Azn9/ToornamentClient)
 # Toornament Client
 
 A java api client for Toornament.
@@ -7,7 +7,18 @@ A java api client for Toornament.
 ## Add to Maven:
 To use the current master branch in your project, add this to your pom.xml
 ```
-	//WIP
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.Azn9</groupId>
+    <artifactId>ToornamentClient</artifactId>
+    <version>2.1.0</version>
+</dependency>
 ```
 
 ## Terms and Guidelines
