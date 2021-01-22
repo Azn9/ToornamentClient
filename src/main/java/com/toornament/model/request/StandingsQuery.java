@@ -8,8 +8,10 @@ import lombok.Singular;
 @Getter
 @Builder
 public class StandingsQuery {
+
     @Singular
-    private List<String> tournamentIds;
+    private final List<String> tournamentIds;
+
     @Singular
-    private List<String> participantIds;
+    private final List<String> participantIds;
 }

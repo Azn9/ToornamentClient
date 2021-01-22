@@ -12,16 +12,21 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ReportsQuery {
+
     String note;
     @JsonAlias("user_id")
     String userID;
+
     @JsonAlias("custom_user_identifier")
     String customUserIdentifier;
     Report report;
-    ReportsType type;
+
     @JsonAlias("participant_id")
     String participantID;
-    Boolean closed;
+
+    ReportsType type;
+    Boolean     closed;
+
     public String toString() {
         try {
             return new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL).writerWithDefaultPrettyPrinter().writeValueAsString(this);

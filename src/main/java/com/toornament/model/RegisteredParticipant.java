@@ -25,13 +25,8 @@ public class RegisteredParticipant {
     @JsonProperty("custom_fields")
     private ArrayList<CustomFields> customFields;
 
-    private String id;
-
     @JsonProperty("user_id")
     private String userID;
-
-    private String name;
-    private String email;
 
     @JsonProperty("checked_in")
     private Boolean checkedIn;
@@ -44,8 +39,13 @@ public class RegisteredParticipant {
 
     @JsonProperty("custom_user_identifier")
     private String customUserIdentifier;
+
     @Singular("lineup")
     private ArrayList<RegisteredParticipant> lineup;
+
+    private String id;
+    private String name;
+    private String email;
 
     public String toString() {
         try {

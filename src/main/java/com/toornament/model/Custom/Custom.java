@@ -3,29 +3,35 @@ package com.toornament.model.Custom;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Custom {
 
-    @JsonProperty("machine_name")
-    private String machineName;
     @JsonProperty("label")
-    public String label;
+    public  String  label;
+
     @JsonProperty("target_type")
-    public String targetType;
+    public  String  targetType;
+
     @JsonProperty("type")
-    public String type;
+    public  String  type;
+
     @JsonProperty("default_value")
-    public String defaultValue;
+    public  String  defaultValue;
+
     @JsonProperty("required")
-    public String required;
+    public  String  required;
+
     @JsonProperty("public")
-    public String _public;
+    public  String  _public;
+
     @JsonProperty("position")
-    public Integer position;
+    public  Integer position;
+
+    @JsonProperty("machine_name")
+    private String  machineName;
+
     public String id;
 
 }

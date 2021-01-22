@@ -9,8 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Webhook {
+
     Boolean enabled;
-    String id, url, name;
+    String  id, url, name;
+
     @Override
     public String toString() {
         try {

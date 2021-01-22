@@ -19,40 +19,40 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings("unused")
 public class Participant {
 
-  @JsonProperty("custom_fields")
-  private CustomFields customFields;
+    @JsonProperty("custom_fields")
+    private CustomFields customFields;
 
-  private String id;
+    @JsonProperty("user_id")
+    private String userID;
 
-  @JsonProperty("user_id")
-  private String userID;
+    @JsonProperty("checked_in")
+    private Boolean checkedIn;
 
-  private String name;
-  private String email;
+    @JsonProperty("created_at")
+    private OffsetDateTime createdAt;
 
-  @JsonProperty("checked_in")
-  private Boolean checkedIn;
+    @JsonProperty("checked_in_at")
+    private OffsetDateTime checkedInAt;
 
-  @JsonProperty("created_at")
-  private OffsetDateTime createdAt;
+    @JsonProperty("custom_user_identifier")
+    private String customUserIdentifier;
 
-  @JsonProperty("checked_in_at")
-  private OffsetDateTime checkedInAt;
+    @Singular("lineup")
+    private ArrayList<Participant> lineup;
 
-  @JsonProperty("custom_user_identifier")
-  private String customUserIdentifier;
-  @Singular("lineup")
-  private ArrayList<Participant> lineup;
+    private String id;
+    private String name;
+    private String email;
 
-  public String toString() {
-    try {
-      return new ObjectMapper()
-          .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-          .writerWithDefaultPrettyPrinter()
-          .writeValueAsString(this);
-    } catch (JsonProcessingException e) {
-      log.error(e.getMessage());
+    public String toString() {
+        try {
+            return new ObjectMapper()
+                .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .writerWithDefaultPrettyPrinter()
+                .writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+        }
+        return null;
     }
-    return null;
-  }
 }

@@ -12,12 +12,16 @@ import lombok.extern.slf4j.Slf4j;
 @Setter
 @Slf4j
 public class WebhookSubscription {
+
     @JsonProperty("event_name")
     String eventName;
+
     @JsonProperty("scope_id")
     String scopeID;
+
     String id;
     String scope;
+
     @Override
     public String toString() {
         try {

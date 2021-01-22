@@ -29,6 +29,7 @@ public class Registration {
 
     @JsonProperty("status")
     private String status;
+
     @JsonProperty("custom_user_identifier")
     private String customUserIdentifier;
 
@@ -46,6 +47,7 @@ public class Registration {
 
     @JsonProperty("created_at")
     private String createdAt;
+
     //This RegisteredParticipant is part of a workaround
     private ArrayList<RegisteredParticipant> lineup;
 

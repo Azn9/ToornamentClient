@@ -8,15 +8,15 @@ import com.toornament.model.Tournament;
 import com.toornament.model.TournamentDetails;
 import com.toornament.model.enums.Scope;
 import com.toornament.model.request.TournamentQuery;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import okhttp3.HttpUrl;
 import okhttp3.HttpUrl.Builder;
 import okhttp3.MediaType;
 import okhttp3.Request;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import okhttp3.RequestBody;
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,9 +26,9 @@ public class Tournaments extends Concept {
         super(client);
     }
 
-    private List<Tournament> requestHelper(Request request){
+    private List<Tournament> requestHelper(Request request) {
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class,
                 Tournament.class));
         } catch (IOException e) {
@@ -37,7 +37,7 @@ public class Tournaments extends Concept {
         }
     }
 
-    public List<Tournament> getFeaturedTournaments(TournamentQuery parameters, Map<String,String> header) {
+    public List<Tournament> getFeaturedTournaments(TournamentQuery parameters, Map<String, String> header) {
         HttpUrl.Builder url = new HttpUrl.Builder();
         url.scheme("https")
             .host("api.toornament.com")
@@ -46,23 +46,23 @@ public class Tournaments extends Concept {
             .addEncodedPathSegment("tournaments")
             .addEncodedPathSegment("featured");
 
-        if(!parameters.getDisciplines().isEmpty())
-            url.addQueryParameter("disciplines", StringUtils.join(parameters.getDisciplines(),","));
-        if(!parameters.getStatuses().isEmpty())
-            url.addQueryParameter("statuses",StringUtils.join(parameters.getStatuses(),","));
-        if(!parameters.getCountries().isEmpty())
-            url.addQueryParameter("name",StringUtils.join(parameters.getCountries(),","));
-        if(!parameters.getPlatforms().isEmpty())
-            url.addQueryParameter("platforms",StringUtils.join(parameters.getPlatforms(),","));
-        url.addQueryParameter("is_online",parameters.getIsOnline() ? "1":"0");
-        url.addQueryParameter("scheduled_after",parameters.getScheduledAfter().format(DateTimeFormatter.ISO_LOCAL_DATE));
-        url.addQueryParameter("scheduled_before",parameters.getScheduledBefore().format(DateTimeFormatter.ISO_LOCAL_DATE));
-        url.addQueryParameter("sort",parameters.getSort().getName());
+        if (!parameters.getDisciplines().isEmpty())
+            url.addQueryParameter("disciplines", StringUtils.join(parameters.getDisciplines(), ","));
+        if (!parameters.getStatuses().isEmpty())
+            url.addQueryParameter("statuses", StringUtils.join(parameters.getStatuses(), ","));
+        if (!parameters.getCountries().isEmpty())
+            url.addQueryParameter("name", StringUtils.join(parameters.getCountries(), ","));
+        if (!parameters.getPlatforms().isEmpty())
+            url.addQueryParameter("platforms", StringUtils.join(parameters.getPlatforms(), ","));
+        url.addQueryParameter("is_online", parameters.getIsOnline() ? "1" : "0");
+        url.addQueryParameter("scheduled_after", parameters.getScheduledAfter().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        url.addQueryParameter("scheduled_before", parameters.getScheduledBefore().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        url.addQueryParameter("sort", parameters.getSort().getName());
 
         Request request = client.getRequestBuilder()
             .get()
             .url(url.build())
-            .addHeader("range",header.get("range"))
+            .addHeader("range", header.get("range"))
             .build();
         return requestHelper(request);
 
@@ -81,7 +81,7 @@ public class Tournaments extends Concept {
             .url(url.build())
             .build();
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, TournamentDetails.class);
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -89,7 +89,7 @@ public class Tournaments extends Concept {
         }
     }
 
-    public List<Stream> getStreams(String id, Map<String,String> range){
+    public List<Stream> getStreams(String id, Map<String, String> range) {
         HttpUrl.Builder url = new HttpUrl.Builder();
         url.scheme("https")
             .host("api.toornament.com")
@@ -101,113 +101,85 @@ public class Tournaments extends Concept {
         Request request = client.getRequestBuilder()
             .get()
             .url(url.build())
-            .addHeader("range",range.get("range"))
+            .addHeader("range", range.get("range"))
             .build();
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class,
                 Stream.class));
         } catch (IOException | NullPointerException e) {
-            throw new ToornamentException("Couldn't retrieve streams from tournament with id "+ id);
+            throw new ToornamentException("Couldn't retrieve streams from tournament with id " + id);
         }
 
     }
 
-    public List<Custom> getViewerCustomFields(String tournamentID){
-        return getCustomFields(tournamentID,"viewer");
+    public List<Custom> getViewerCustomFields(String tournamentID) {
+        return getCustomFields(tournamentID, "viewer");
     }
 
-    public List<Custom> getParticipantCustomFields(String tournamentID){
-        return getCustomFields(tournamentID,"participant");
+    public List<Custom> getParticipantCustomFields(String tournamentID) {
+        return getCustomFields(tournamentID, "participant");
     }
 
-    public List<Custom> getOrganizerCustomFields(String tournamentID){
-        return getCustomFields(tournamentID,"organizer");
+    public List<Custom> getOrganizerCustomFields(String tournamentID) {
+        return getCustomFields(tournamentID, "organizer");
     }
 
-  private List<Custom> getCustomFields(String tournamentID, String scope) {
-    HttpUrl.Builder url = new HttpUrl.Builder();
-    url.scheme("https")
-        .host("api.toornament.com")
-        .addEncodedPathSegment(scope)
-        .addEncodedPathSegment("v2")
-        .addEncodedPathSegment("tournaments")
-        .addEncodedPathSegment(tournamentID);
+    private List<Custom> getCustomFields(String tournamentID, String scope) {
+        HttpUrl.Builder url = new HttpUrl.Builder();
+        url.scheme("https")
+            .host("api.toornament.com")
+            .addEncodedPathSegment(scope)
+            .addEncodedPathSegment("v2")
+            .addEncodedPathSegment("tournaments")
+            .addEncodedPathSegment(tournamentID);
 
-    Request request = null;
-    if(scope.matches("organizer"))
-        request = client.getAuthenticatedRequestBuilder().get().url(url.build()).build();
-    else
-    request = client.getRequestBuilder().get().url(url.build()).build();
+        Request request;
+        if (scope.matches("organizer"))
+            request = client.getAuthenticatedRequestBuilder().get().url(url.build()).build();
+        else
+            request = client.getRequestBuilder().get().url(url.build()).build();
 
-    try {
-      String responseBody = client.executeRequest(request).body().string();
-      return mapper.readValue(
-          responseBody,
-          mapper.getTypeFactory().constructCollectionType(List.class, Custom.class));
-    } catch (IOException e) {
-        logger.error(e.getMessage());
-      throw new ToornamentException("Couldn't retrieve custom fields");
+        try {
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
+            return mapper.readValue(
+                responseBody,
+                mapper.getTypeFactory().constructCollectionType(List.class, Custom.class));
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+            throw new ToornamentException("Couldn't retrieve custom fields");
+        }
     }
+
+    public Custom createCustomField(String tournamentID, Custom query) {
+        HttpUrl.Builder url = new HttpUrl.Builder();
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
+            url.scheme("https")
+                .host("api.toornament.com")
+                .addEncodedPathSegment("organizer")
+                .addEncodedPathSegment("v2")
+                .addEncodedPathSegment("tournaments")
+                .addEncodedPathSegment(tournamentID)
+                .addEncodedPathSegment("custom-fields");
+        }
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), query.toString());
+        Request request = client.getAuthenticatedRequestBuilder()
+            .post(body)
+            .url(url.build())
+            .build();
+
+        try {
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
+            return mapper.readValue(responseBody,
+                mapper.getTypeFactory().constructType(Custom.class));
+        } catch (IOException | NullPointerException e) {
+            logger.error(e.getMessage());
+            throw new ToornamentException("Got IOException creating custom field");
         }
 
-        public Custom createCustomField(String tournamentID, Custom query){
-            HttpUrl.Builder url = new HttpUrl.Builder();
-    if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
-      url.scheme("https")
-          .host("api.toornament.com")
-          .addEncodedPathSegment("organizer")
-          .addEncodedPathSegment("v2")
-          .addEncodedPathSegment("tournaments")
-          .addEncodedPathSegment(tournamentID)
-          .addEncodedPathSegment("custom-fields");
-            }
-            RequestBody body = RequestBody.create(MediaType.parse("application/json"),query.toString());
-           Request request = client.getAuthenticatedRequestBuilder()
-           .post(body)
-           .url(url.build())
-           .build();
+    }
 
-            try {
-                String responseBody = client.executeRequest(request).body().string();
-                return mapper.readValue(responseBody,
-                    mapper.getTypeFactory().constructType(Custom.class));
-            } catch (IOException | NullPointerException e) {
-                logger.error(e.getMessage());
-                throw new ToornamentException("Got IOException creating custom field");
-            }
-
-        }
-
-        public Custom getCustomField(String tournamentID, String customFieldID){
-            HttpUrl.Builder url = new HttpUrl.Builder();
-            if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
-                url.scheme("https")
-                    .host("api.toornament.com")
-                    .addEncodedPathSegment("organizer")
-                    .addEncodedPathSegment("v2")
-                    .addEncodedPathSegment("tournaments")
-                    .addEncodedPathSegment(tournamentID)
-                    .addEncodedPathSegment("custom-fields")
-                    .addEncodedPathSegment(customFieldID);
-            }
-
-            Request request = client.getAuthenticatedRequestBuilder()
-                .get()
-                .url(url.build())
-                .build();
-
-            try {
-                String responseBody = client.executeRequest(request).body().string();
-                return mapper.readValue(responseBody,
-                    mapper.getTypeFactory().constructType(Custom.class));
-            } catch (IOException | NullPointerException e) {
-                logger.error(e.getMessage());
-                throw new ToornamentException("Got IOException creating custom field");
-            }
-        }
-
-    public Custom updateCustomField(String tournamentID, String customFieldID, Custom query){
+    public Custom getCustomField(String tournamentID, String customFieldID) {
         HttpUrl.Builder url = new HttpUrl.Builder();
         if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             url.scheme("https")
@@ -219,14 +191,42 @@ public class Tournaments extends Concept {
                 .addEncodedPathSegment("custom-fields")
                 .addEncodedPathSegment(customFieldID);
         }
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),query.toString());
+
+        Request request = client.getAuthenticatedRequestBuilder()
+            .get()
+            .url(url.build())
+            .build();
+
+        try {
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
+            return mapper.readValue(responseBody,
+                mapper.getTypeFactory().constructType(Custom.class));
+        } catch (IOException | NullPointerException e) {
+            logger.error(e.getMessage());
+            throw new ToornamentException("Got IOException creating custom field");
+        }
+    }
+
+    public Custom updateCustomField(String tournamentID, String customFieldID, Custom query) {
+        HttpUrl.Builder url = new HttpUrl.Builder();
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
+            url.scheme("https")
+                .host("api.toornament.com")
+                .addEncodedPathSegment("organizer")
+                .addEncodedPathSegment("v2")
+                .addEncodedPathSegment("tournaments")
+                .addEncodedPathSegment(tournamentID)
+                .addEncodedPathSegment("custom-fields")
+                .addEncodedPathSegment(customFieldID);
+        }
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), query.toString());
         Request request = client.getAuthenticatedRequestBuilder()
             .patch(body)
             .url(url.build())
             .build();
 
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Custom.class));
         } catch (IOException | NullPointerException e) {
@@ -235,9 +235,9 @@ public class Tournaments extends Concept {
         }
     }
 
-    public Integer deleteCustomField(String tournamentID, String customFieldID){
+    public Integer deleteCustomField(String tournamentID, String customFieldID) {
         Builder url = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_ADMIN)){
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             url
                 .scheme("https")
                 .host("api.toornament.com")

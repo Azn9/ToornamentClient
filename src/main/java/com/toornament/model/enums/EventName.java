@@ -21,10 +21,12 @@ public enum EventName {
     TOURNAMENT_CHECK_IN_OPENED("tournament.check_in_opened"),
     TOURNAMENT_CHECK_IN_CLOSED("tournament.check_in_closed");
 
-    private String name;
-    EventName(String name){
+    private final String name;
+
+    EventName(String name) {
         this.name = name;
     }
+
     @JsonValue
     public String getName() {
         return name;

@@ -14,23 +14,19 @@ import lombok.Setter;
 @EqualsAndHashCode
 @JsonInclude(value = Include.NON_NULL)
 public class Round {
-    private String id;
+
     @JsonProperty("stage_id")
     private String stageID;
+
     @JsonProperty("group_id")
     private String groupID;
-    private Integer number;
-    private String name;
-    private Boolean closed;
+
+    private String   id;
+    private Integer  number;
+    private String   name;
+    private Boolean  closed;
     private Settings settings;
 
-    @Setter
-    @Getter
-    private class Settings{
-        String size;
-        public Settings(){}
-
-    }
     @Override
     public String toString() {
         try {
@@ -39,5 +35,16 @@ public class Round {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    @Setter
+    @Getter
+    private class Settings {
+
+        String size;
+
+        public Settings() {
+        }
+
     }
 }

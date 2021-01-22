@@ -6,18 +6,19 @@ public class ApiTokenResponse {
 
     @JsonProperty("access_token")
     String accessToken;
+
     @JsonProperty("expires_in")
     String expiresIn;
+
     @JsonProperty("token_type")
     String tokenType;
+
     @JsonProperty("scope")
-      String scope;
+    String scope;
+
     String error;
     String message;
     String hint;
-
-    public ApiTokenResponse() {
-    }
 
     public String getAccessToken() {
         return this.accessToken;
@@ -50,6 +51,7 @@ public class ApiTokenResponse {
     public void setScope(String scope) {
         this.scope = scope;
     }
+
     public String getError() {
         return this.error;
     }

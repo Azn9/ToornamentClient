@@ -4,11 +4,10 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.SimpleDateFormat;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.text.SimpleDateFormat;
 
 @Getter
 @Setter
@@ -16,13 +15,17 @@ import java.text.SimpleDateFormat;
 @EqualsAndHashCode
 public class Logo {
 
-    @JsonAlias({"logo_small","icon_small"})
+    @JsonAlias({"logo_small", "icon_small"})
     private String logoSmall;
-    @JsonAlias({"logo_medium","icon_medium"})
+
+    @JsonAlias({"logo_medium", "icon_medium"})
     private String logoMedium;
-    @JsonAlias({"logo_large","icon_large"})
+
+    @JsonAlias({"logo_large", "icon_large"})
     private String logoLarge;
+
     private String original;
+
     @Override
     public String toString() {
         try {

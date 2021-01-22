@@ -6,16 +6,22 @@ public class ToornamentError {
 
     @JsonProperty("message")
     String message;
-    String scope;
+
     @JsonProperty("property_path")
     String propertyPath;
+
     @JsonProperty("invalid_value")
     String invalidValue;
-    String type;
+
     @JsonProperty("error")
     String error;
+
     @JsonProperty("hint")
     String hint;
+
+    String scope;
+    String type;
+
     public String getMessage() {
         return this.message;
     }

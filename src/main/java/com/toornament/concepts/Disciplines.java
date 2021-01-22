@@ -1,15 +1,15 @@
 package com.toornament.concepts;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.toornament.ToornamentClient;
 import com.toornament.exception.ToornamentException;
 import com.toornament.model.Discipline;
 import com.toornament.model.DisciplineDetails;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
-
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
 import org.slf4j.LoggerFactory;
 
 public class Disciplines extends Concept {
@@ -30,12 +30,12 @@ public class Disciplines extends Concept {
         Request request = client.getRequestBuilder()
             .get()
             .url(urlBuilder.build())
-            .addHeader("range",header)
+            .addHeader("range", header)
 
             .build();
-        String responseBody = null;
+        String responseBody;
         try {
-            responseBody = client.executeRequest(request).body().string();
+            responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class,
                 Discipline.class));
@@ -47,19 +47,19 @@ public class Disciplines extends Concept {
 
     public DisciplineDetails getDiscipline(String id) {
 
-            HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
-                .scheme("https")
-                .host("api.toornament.com")
-                .addEncodedPathSegment("viewer")
-                .addEncodedPathSegment("v2")
-                .addEncodedPathSegment("disciplines")
-                .addEncodedPathSegment(id);
-            Request request = client.getRequestBuilder()
-                .get()
-                .url(urlBuilder.build())
-                .build();
+        HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
+            .scheme("https")
+            .host("api.toornament.com")
+            .addEncodedPathSegment("viewer")
+            .addEncodedPathSegment("v2")
+            .addEncodedPathSegment("disciplines")
+            .addEncodedPathSegment(id);
+        Request request = client.getRequestBuilder()
+            .get()
+            .url(urlBuilder.build())
+            .build();
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             mapper.configure(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true);
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructType(DisciplineDetails.class));
         } catch (IOException e) {

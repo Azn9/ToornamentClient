@@ -8,11 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class FullName{
+public class FullName {
 
-	@JsonProperty("last_name")
-	private String lastName;
+    @JsonProperty("last_name")
+    private String lastName;
 
-	@JsonProperty("first_name")
-	private String firstName;
+    @JsonProperty("first_name")
+    private String firstName;
 }

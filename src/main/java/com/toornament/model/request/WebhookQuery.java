@@ -6,6 +6,8 @@ import lombok.Getter;
 @Getter
 @Builder
 public class WebhookQuery {
+
     Boolean enabled;
-    String url, name;
+    String  url, name;
+
 }

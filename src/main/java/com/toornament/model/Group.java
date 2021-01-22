@@ -4,34 +4,27 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.text.SimpleDateFormat;
 
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
 public class Group {
-    private String id;
+
     @JsonProperty("stage_id")
     private String stageID;
-    private String name;
-    private Integer number;
-    private Boolean closed;
+
+    private String   id;
+    private String   name;
+    private Integer  number;
+    private Boolean  closed;
     private Settings settings;
 
-    @Setter
-    @Getter
-    private class Settings{
-        String size;
-        List<List<List<Integer>>> pairing_values;
-        public Settings(){}
-
-    }
     @Override
     public String toString() {
         try {
@@ -40,5 +33,17 @@ public class Group {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    @Setter
+    @Getter
+    private class Settings {
+
+        String                    size;
+        List<List<List<Integer>>> pairing_values;
+
+        public Settings() {
+        }
+
     }
 }

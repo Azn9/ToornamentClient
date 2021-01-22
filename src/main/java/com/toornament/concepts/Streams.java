@@ -2,28 +2,30 @@ package com.toornament.concepts;
 
 import com.toornament.ToornamentClient;
 import com.toornament.exception.ToornamentException;
-
 import com.toornament.model.Stream;
-
 import com.toornament.model.Video;
 import com.toornament.model.enums.Scope;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import okhttp3.HttpUrl.Builder;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-public class Streams extends Concept{
-    private String tournamentID;
+public class Streams extends Concept {
+
+    private final String tournamentID;
+
     public Streams(ToornamentClient client, String tournamentID) {
         super(client);
         this.tournamentID = tournamentID;
     }
-    public Stream getStreams(Map<String,String> range){
+
+    public Stream getStreams(Map<String, String> range) {
         Builder urlBuilder = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_ADMIN)){
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             urlBuilder
                 .scheme("https")
                 .host("api.toornament.com")
@@ -36,10 +38,10 @@ public class Streams extends Concept{
         Request request = client.getAuthenticatedRequestBuilder()
             .get()
             .url(urlBuilder.build())
-            .addHeader("range",range.get("range"))
+            .addHeader("range", range.get("range"))
             .build();
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(
                 List.class,
                 Stream.class));
@@ -49,10 +51,10 @@ public class Streams extends Concept{
         }
     }
 
-    public Stream createStream(Video query){
+    public Stream createStream(Video query) {
         Builder urlBuilder = new Builder();
-        logger.debug("Scopes: {}",client.getScope().toString());
-        if(client.getScope().contains(Scope.ORGANIZER_ADMIN)){
+        logger.debug("Scopes: {}", client.getScope().toString());
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             urlBuilder
                 .scheme("https")
                 .host("api.toornament.com")
@@ -62,14 +64,14 @@ public class Streams extends Concept{
                 .addEncodedPathSegment(tournamentID)
                 .addEncodedPathSegment("streams");
         }
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),query.toString());
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), query.toString());
         Request request = client.getAuthenticatedRequestBuilder()
-        .post(body)
-        .url(urlBuilder.build())
-        .build();
+            .post(body)
+            .url(urlBuilder.build())
+            .build();
 
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Stream.class));
         } catch (IOException | NullPointerException e) {
@@ -78,9 +80,9 @@ public class Streams extends Concept{
         }
     }
 
-    public Stream getStream(String streamID){
+    public Stream getStream(String streamID) {
         Builder url = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_ADMIN)){
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             url
                 .scheme("https")
                 .host("api.toornament.com")
@@ -97,7 +99,7 @@ public class Streams extends Concept{
             .url(url.build())
             .build();
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Stream.class));
         } catch (IOException | NullPointerException e) {
@@ -106,9 +108,9 @@ public class Streams extends Concept{
         }
     }
 
-    public Stream updateStream(String streamID, Video query){
+    public Stream updateStream(String streamID, Video query) {
         Builder url = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_ADMIN)){
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             url
                 .scheme("https")
                 .host("api.toornament.com")
@@ -119,14 +121,14 @@ public class Streams extends Concept{
                 .addEncodedPathSegment("streams")
                 .addEncodedPathSegment(streamID);
         }
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),query.toString());
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), query.toString());
         Request request = client.getAuthenticatedRequestBuilder()
             .patch(body)
             .url(url.build())
             .build();
 
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Stream.class));
         } catch (IOException | NullPointerException e) {
@@ -135,9 +137,9 @@ public class Streams extends Concept{
         }
     }
 
-    public Integer deleteStream(String streamID){
+    public Integer deleteStream(String streamID) {
         Builder url = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_ADMIN)){
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             url
                 .scheme("https")
                 .host("api.toornament.com")
@@ -156,9 +158,9 @@ public class Streams extends Concept{
         return client.executeRequest(request).code();
     }
 
-    public List<String> getStreamsOfMatch(String matchID){
+    public List<String> getStreamsOfMatch(String matchID) {
         Builder url = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_ADMIN)){
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             url
                 .scheme("https")
                 .host("api.toornament.com")
@@ -176,18 +178,18 @@ public class Streams extends Concept{
             .build();
 
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
-                mapper.getTypeFactory().constructCollectionType(List.class,String.class));
+                mapper.getTypeFactory().constructCollectionType(List.class, String.class));
         } catch (IOException | NullPointerException e) {
             logger.error(e.getMessage());
             throw new ToornamentException("Got IOException getting match streams");
         }
     }
 
-    public List<Stream> updateMatchStreams(String matchID, List<String> streamList){
+    public List<Stream> updateMatchStreams(String matchID, List<String> streamList) {
         Builder url = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_ADMIN)){
+        if (client.getScope().contains(Scope.ORGANIZER_ADMIN)) {
             url
                 .scheme("https")
                 .host("api.toornament.com")
@@ -198,16 +200,16 @@ public class Streams extends Concept{
                 .addEncodedPathSegment(matchID)
                 .addEncodedPathSegment("streams");
         }
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),streamList.toString());
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), streamList.toString());
         Request request = client.getAuthenticatedRequestBuilder()
             .put(body)
             .url(url.build())
             .build();
 
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
-                mapper.getTypeFactory().constructCollectionType(List.class,String.class));
+                mapper.getTypeFactory().constructCollectionType(List.class, String.class));
         } catch (IOException | NullPointerException e) {
             logger.error(e.getMessage());
             throw new ToornamentException("Got IOException updating match streams");

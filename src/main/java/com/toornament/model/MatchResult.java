@@ -1,15 +1,14 @@
 package com.toornament.model;
 
-import com.toornament.model.enums.MatchStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.toornament.model.enums.MatchStatus;
+import java.text.SimpleDateFormat;
+import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.text.SimpleDateFormat;
-import java.util.List;
 
 @Getter
 @Setter
@@ -17,8 +16,9 @@ import java.util.List;
 @EqualsAndHashCode
 public class MatchResult {
 
-    private MatchStatus status;
+    private MatchStatus    status;
     private List<Opponent> opponents;
+
     @Override
     public String toString() {
         try {

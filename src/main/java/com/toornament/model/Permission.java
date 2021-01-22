@@ -6,18 +6,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toornament.model.enums.Attribute;
 import java.util.List;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Data
 @NoArgsConstructor
 @Slf4j
 public class Permission {
+
     private List<Attribute> attributes;
-    private String email;
-    private String id;
+    private String          email;
+    private String          id;
+
     @Override
     public String toString() {
         try {

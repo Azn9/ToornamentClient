@@ -5,17 +5,19 @@ import com.toornament.exception.ToornamentException;
 import com.toornament.model.User;
 import com.toornament.model.enums.Scope;
 import java.io.IOException;
+import java.util.Objects;
 import okhttp3.HttpUrl.Builder;
 import okhttp3.Request;
 
 public class Users extends Concept {
-    public Users(ToornamentClient client){
+
+    public Users(ToornamentClient client) {
         super(client);
     }
 
-    public User getUser(){
+    public User getUser() {
         Builder url = new Builder();
-        logger.debug("Scopes: {}",client.getScope().toString());
+        logger.debug("Scopes: {}", client.getScope().toString());
         if (client.getScope().contains(Scope.USER_INFO)) {
             url.scheme("https")
                 .host("api.toornament.com")
@@ -31,7 +33,7 @@ public class Users extends Concept {
             .build();
 
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, User.class);
         } catch (IOException e) {
             logger.error(e.getMessage());

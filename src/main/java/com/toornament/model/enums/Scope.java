@@ -15,14 +15,16 @@ public enum Scope {
     MANAGE_REGISTRATIONS("participant:manage_registrations"),
     ORGANIZER_REGISTRATION("organizer:registration"),
     ORGANIZER_PERMISSION("organizer:permission");
-    private String scope;
-    @JsonValue
-    public String getScope() {
-        return scope;
-    }
+
+    private final String scope;
 
     Scope(String scope) {
         this.scope = scope;
+    }
+
+    @JsonValue
+    public String getScope() {
+        return scope;
     }
 
     public String toString() {

@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -34,141 +35,145 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ToornamentClient {
-  public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-  private OkHttpClient httpClient;
-  private String apiKey;
-  private String clientId;
-  private String clientSecret;
-  private String oAuthToken;
-  private HashSet<Scope> scope;
-  private ObjectMapper mapper;
-  public ToornamentClient(
-      String apiKey, String clientId, String clientSecret, HashSet<Scope> scope) {
-    this.apiKey = apiKey;
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
-    this.scope = scope;
-    this.httpClient = new OkHttpClient();
-    mapper = new ObjectMapper();
-    mapper.registerModule(new JavaTimeModule());
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    authorize();
-  }
+    private final OkHttpClient httpClient;
+    private final String       apiKey;
+    private final String       clientId;
+    private final String       clientSecret;
+    private final Set<Scope>   scope;
+    private final ObjectMapper mapper;
+
+    private String oAuthToken;
+
+    public ToornamentClient(
+        String apiKey, String clientId, String clientSecret, HashSet<Scope> scope) {
+        this.apiKey = apiKey;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.scope = scope;
+        this.httpClient = new OkHttpClient();
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        authorize();
+    }
+
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public HashSet<Scope> getScope() {
-    return scope;
-  }
-
-  public OkHttpClient getHttpClient() {
-    return httpClient;
-  }
-
-  public ObjectMapper getMapper() {
-    return mapper;
-  }
-  public Participants participants(String tournamentId){return new Participants(this, tournamentId);}
-
-  public Tournaments tournaments() {
-    return new Tournaments(this);
-  }
-
-  public Disciplines disciplines() {
-    return new Disciplines(this);
-  }
-
-  public Matches matches(TournamentDetails tournament) {
-    return new Matches(this, tournament);
-  }
-
-  public Groups groups(String tournamentId) {
-    return new Groups(this, tournamentId);
-  }
-
-  public FinalStandings finalStandings() {
-    return new FinalStandings(this);
-  }
-
-  public MatchGames matchGames() {
-    return new MatchGames(this);
-  }
-
-  public Permissions permissions(String tournamentID) {
-    return new Permissions(this, tournamentID);
-  }
-
-  public Registrations registrations(String tournamentID) {
-    return new Registrations(this, tournamentID);
-  }
-
-  public MatchReports Reports(String tournamentID) {
-    return new MatchReports(this, tournamentID);
-  }
-
-  public Rounds rounds(String tournamentID) {
-    return new Rounds(this, tournamentID);
-  }
-
-  public Streams streams(String tournamentID) {
-    return new Streams(this, tournamentID);
-  }
-
-  public Users users() {
-    return new Users(this);
-  }
-
-  public Webhooks Webhooks() {
-    return new Webhooks(this);
-  }
-
-  public void authorize() {
-    ApiTokenRequest tokenRequest =
-        new ApiTokenRequest("client_credentials", clientId, clientSecret, scope);
-    Request.Builder requestBuilder = new Request.Builder();
-    try {
-      requestBuilder.url(
-          "https://api.toornament.com/oauth/v2/token"
-              + "?grant_type="
-              + tokenRequest.getGrantType()
-              + "&"
-              + "client_id="
-              + tokenRequest.getClientId()
-              + "&"
-              + "client_secret="
-              + tokenRequest.getClientSecret()
-              + "&"
-              + "scope="
-              + tokenRequest.getScope());
-      Request request = requestBuilder.build();
-      Response response = executeRequest(request);
-      this.oAuthToken =
-          mapper.readValue(response.body().string(), ApiTokenResponse.class).getAccessToken();
-    } catch (IOException e) {
-
-      logger.error("Issue authorizing client: {}",e.getMessage());
+    public Set<Scope> getScope() {
+        return this.scope;
     }
-  }
 
-  public Request.Builder getAuthenticatedRequestBuilder() {
-    if (this.oAuthToken == null) {
-      authorize();
+    public OkHttpClient getHttpClient() {
+        return this.httpClient;
     }
-      logger.info(oAuthToken);
-    return getRequestBuilder().addHeader("Authorization", "Bearer " + oAuthToken);
-  }
 
-  public Request.Builder getRequestBuilder() {
-    return new Request.Builder().addHeader("X-Api-Key", this.apiKey);
-  }
+    public ObjectMapper getMapper() {
+        return this.mapper;
+    }
 
-  public Response executeRequest(Request request) {
+    public Participants getParticipants(String tournamentId) {
+        return new Participants(this, tournamentId);
+    }
 
-      try {
-          return this.httpClient.newCall(request).execute();
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-return null;
-  }
+    public Tournaments getTournaments() {
+        return new Tournaments(this);
+    }
+
+    public Disciplines getDisciplines() {
+        return new Disciplines(this);
+    }
+
+    public Matches getMatches(TournamentDetails tournament) {
+        return new Matches(this, tournament);
+    }
+
+    public Groups getGroups(String tournamentId) {
+        return new Groups(this, tournamentId);
+    }
+
+    public FinalStandings getFinalStandings() {
+        return new FinalStandings(this);
+    }
+
+    public MatchGames getMatchGames() {
+        return new MatchGames(this);
+    }
+
+    public Permissions getPermissions(String tournamentID) {
+        return new Permissions(this, tournamentID);
+    }
+
+    public Registrations getRegistrations(String tournamentID) {
+        return new Registrations(this, tournamentID);
+    }
+
+    public MatchReports getReports(String tournamentID) {
+        return new MatchReports(this, tournamentID);
+    }
+
+    public Rounds getRounds(String tournamentID) {
+        return new Rounds(this, tournamentID);
+    }
+
+    public Streams getStreams(String tournamentID) {
+        return new Streams(this, tournamentID);
+    }
+
+    public Users getUsers() {
+        return new Users(this);
+    }
+
+    public Webhooks getWebhooks() {
+        return new Webhooks(this);
+    }
+
+    public void authorize() {
+        ApiTokenRequest tokenRequest =
+            new ApiTokenRequest("client_credentials", clientId, clientSecret, scope);
+        Request.Builder requestBuilder = new Request.Builder();
+        try {
+            requestBuilder.url(
+                "https://api.toornament.com/oauth/v2/token"
+                    + "?grant_type="
+                    + tokenRequest.getGrantType()
+                    + "&"
+                    + "client_id="
+                    + tokenRequest.getClientId()
+                    + "&"
+                    + "client_secret="
+                    + tokenRequest.getClientSecret()
+                    + "&"
+                    + "scope="
+                    + tokenRequest.getScope());
+            Request request = requestBuilder.build();
+            Response response = executeRequest(request);
+            assert response.body() != null;
+            this.oAuthToken =
+                mapper.readValue(response.body().string(), ApiTokenResponse.class).getAccessToken();
+        } catch (IOException e) {
+            logger.error("Issue authorizing client: {}", e.getMessage());
+        }
+    }
+
+    public Request.Builder getAuthenticatedRequestBuilder() {
+        if (this.oAuthToken == null) {
+            authorize();
+        }
+        logger.info(oAuthToken);
+        return getRequestBuilder().addHeader("Authorization", "Bearer " + oAuthToken);
+    }
+
+    public Request.Builder getRequestBuilder() {
+        return new Request.Builder().addHeader("X-Api-Key", this.apiKey);
+    }
+
+    public Response executeRequest(Request request) {
+        try {
+            return this.httpClient.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

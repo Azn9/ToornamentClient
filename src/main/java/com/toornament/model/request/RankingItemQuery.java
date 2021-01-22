@@ -13,13 +13,17 @@ public class RankingItemQuery {
     @JsonAlias("custom_user_identifiers")
     @Singular
     List<String> customUserIdentifiers;
+
     @JsonAlias("group_ids")
     @Singular
     List<String> groupIDs;
+
     @JsonAlias("group_numbers")
     @Singular
     List<String> groupNumbers;
+
     @JsonAlias("participant_ids")
     @Singular
     List<String> participantIDs;
+
 }

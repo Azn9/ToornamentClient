@@ -1,18 +1,22 @@
 package com.toornament.model;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toornament.model.enums.MatchFormat;
 import com.toornament.model.enums.MatchType;
 import com.toornament.model.enums.ParticipantType;
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
 @Getter
 @Setter
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,28 +25,35 @@ public class TournamentDetails extends Tournament {
 
     @JsonProperty("participant_type")
     private ParticipantType participantType;
+
     @JsonProperty("match_type")
     private MatchType matchType;
-    private String organization;
-    private String website;
-    private String description;
-    private String rules;
-    private String prize;
+
     @JsonProperty("team_min_size")
     private Integer teamSizeMin;
+
     @JsonProperty("team_max_size")
     private Integer teamSizeMax;
+
     @JsonProperty("check_in")
     private Boolean checkIn;
+
     @JsonProperty("participant_nationality")
     private Boolean participantNationality;
+
     @JsonProperty("match_format")
     private MatchFormat matchFormat;
+
+    private String                organization;
+    private String                website;
+    private String                description;
+    private String                rules;
+    private String                prize;
     private Map<String, Object[]> disciplineFields = new HashMap<>();
 
     // Capture all other fields that Jackson do not match other members
     @JsonAnyGetter
-    public Map<String, Object[]> otherFields() {
+    public Map<String, Object[]> getOtherFields() {
         return disciplineFields;
     }
 

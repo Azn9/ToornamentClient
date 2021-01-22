@@ -10,11 +10,15 @@ import lombok.Getter;
 @Getter
 @Builder
 public class WebhookSubscriptionQuery {
+
     @JsonProperty("event_name")
     String eventName;
+
     @JsonProperty("scope_id")
     String scopeID;
+
     String scope;
+
     @Override
     public String toString() {
         try {

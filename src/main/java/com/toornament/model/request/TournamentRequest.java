@@ -1,20 +1,18 @@
 package com.toornament.model.request;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.toornament.model.enums.MatchFormat;
-import com.toornament.model.enums.ParticipantType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.toornament.model.enums.MatchFormat;
+import com.toornament.model.enums.ParticipantType;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
@@ -22,59 +20,79 @@ import java.time.LocalDateTime;
 @Builder
 public class TournamentRequest {
 
-    private String discipline;
-    private String name;
-    private Integer size;
-    @JsonProperty("participant_type")
-    private ParticipantType participantType;
-    @JsonProperty("full_name")
-    private String fullName;
-    private String organization;
-    private String website;
-    @JsonProperty("scheduled_date_start")
-    private LocalDate dateStart;
-    @JsonProperty("scheduled_date_end")
-    private LocalDate dateEnd;
-    private String timezone;
-    private Boolean online;
     @JsonProperty("public")
     private Boolean isPublic;
-    private String location;
-    private String country;
-    private String description;
-    private String rules;
-    private String prize;
+
+    @JsonProperty("participant_type")
+    private ParticipantType participantType;
+
+    @JsonProperty("full_name")
+    private String fullName;
+
+    @JsonProperty("scheduled_date_start")
+    private LocalDate dateStart;
+
+    @JsonProperty("scheduled_date_end")
+    private LocalDate dateEnd;
+
     @JsonProperty("check_in")
     private Boolean checkIn;
+
     @JsonProperty("participant_nationality")
     private Boolean participantNationality;
+
     @JsonProperty("match_format")
     private MatchFormat matchFormat;
-    private Boolean archived;
+
     @JsonAlias("match_report_enabled")
     private Boolean matchReportEnabled;
+
     @JsonAlias("registration_enabled")
     private Boolean registrationEnabled;
+
     @JsonAlias("registration_opening_datetime")
     private LocalDateTime registrationOpeningDatetime;
+
     @JsonAlias("registration_closing_datetime")
     private LocalDateTime registrationClosingDatetime;
+
     @JsonAlias("registration_notification_enabled")
     private Boolean registrationNotificationEnabled;
+
     @JsonAlias("registration_request_message")
     private String registrationRequestMessage;
+
     @JsonAlias("registration_accept_message")
     private String registrationAcceptMessage;
+
     @JsonAlias("registration_refuse_message")
     private String registrationRefuseMessage;
+
     @JsonAlias("check_in_enabled")
     private Boolean checkInEnabled;
+
     @JsonAlias("check_in_participant_enabled")
     private Boolean checkInParticipantEnabled;
+
     @JsonAlias("check_in_participant_start_datetime")
     private LocalDateTime checkInParticipantStartDatetime;
+
     @JsonAlias("check_in_participant_end_datetime")
     private LocalDateTime checkInParticipantEndDatetime;
+
+    private String  discipline;
+    private String  name;
+    private Integer size;
+    private String  organization;
+    private String  website;
+    private String  timezone;
+    private Boolean online;
+    private String  location;
+    private String  country;
+    private String  description;
+    private String  rules;
+    private String  prize;
+    private Boolean archived;
 
     public TournamentRequest(String discipline, String name, Integer size, ParticipantType participantType) {
         this(discipline, name, size, participantType, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);

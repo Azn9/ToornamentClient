@@ -3,9 +3,12 @@ package com.toornament.model.enums;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum MatchType {
-    DUEL("duel"), FFA("ffa"), BYE("bye");
 
-    private String name;
+    DUEL("duel"),
+    FFA("ffa"),
+    BYE("bye");
+
+    private final String name;
 
     MatchType(String name) {
         this.name = name;

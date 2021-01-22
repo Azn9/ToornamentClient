@@ -1,4 +1,3 @@
-
 package com.toornament.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,17 +15,19 @@ import lombok.extern.slf4j.Slf4j;
 @SuppressWarnings("unused")
 public class Standings {
 
-    private String id;
-    private Participant participant;
-    private Integer position;
-    private Integer rank;
     @JsonProperty("tournament_id")
-    private String tournamentID;
+    private String      tournamentID;
+
+    private String      id;
+    private Participant participant;
+    private Integer     position;
+    private Integer     rank;
+
     public String toString() {
         try {
             return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            log.error("toString() conversion failed",e);
+            log.error("toString() conversion failed", e);
         }
         return null;
     }

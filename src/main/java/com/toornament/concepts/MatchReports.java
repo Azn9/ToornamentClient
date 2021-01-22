@@ -9,6 +9,7 @@ import com.toornament.model.request.ReportsQuery;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import okhttp3.HttpUrl.Builder;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -16,15 +17,18 @@ import okhttp3.RequestBody;
 import org.slf4j.LoggerFactory;
 
 public class MatchReports extends Concept {
-    private String tournamentID;
-    public MatchReports(ToornamentClient client, String tournamentID){
+
+    private final String tournamentID;
+
+    public MatchReports(ToornamentClient client, String tournamentID) {
         super(client);
         this.tournamentID = tournamentID;
         logger = LoggerFactory.getLogger(this.getClass());
     }
-    public List<com.toornament.model.Reports> getReports(String matchID, Map<String,String> header, Map<String,String> paramsMap){
+
+    public List<com.toornament.model.Reports> getReports(String matchID, Map<String, String> header, Map<String, String> paramsMap) {
         Builder urlBuilder = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_RESULT)){
+        if (client.getScope().contains(Scope.ORGANIZER_RESULT)) {
             urlBuilder
                 .scheme("https")
                 .host("api.toornament.com")
@@ -40,15 +44,15 @@ public class MatchReports extends Concept {
             urlBuilder.addQueryParameter(params.getKey(), params.getValue());
         }
 
-        logger.debug("url: {}",urlBuilder.build().toString());
+        logger.debug("url: {}", urlBuilder.build().toString());
 
         Request request = client.getAuthenticatedRequestBuilder()
             .get()
             .url(urlBuilder.build())
-            .addHeader("range",header.get("range"))
+            .addHeader("range", header.get("range"))
             .build();
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructCollectionType(List.class, Reports.class));
         } catch (IOException | NullPointerException e) {
@@ -58,9 +62,9 @@ public class MatchReports extends Concept {
 
     }
 
-    public Report getReport(String matchID, String reportID){
+    public Report getReport(String matchID, String reportID) {
         Builder url = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_RESULT)){
+        if (client.getScope().contains(Scope.ORGANIZER_RESULT)) {
             url
                 .scheme("https")
                 .host("api.toornament.com")
@@ -79,7 +83,7 @@ public class MatchReports extends Concept {
             .url(url.build())
             .build();
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Reports.class));
         } catch (IOException | NullPointerException e) {
@@ -88,9 +92,9 @@ public class MatchReports extends Concept {
         }
     }
 
-    public Report createReport(ReportsQuery query, String matchID){
+    public Report createReport(ReportsQuery query, String matchID) {
         Builder url = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_RESULT)){
+        if (client.getScope().contains(Scope.ORGANIZER_RESULT)) {
             url
                 .scheme("https")
                 .host("api.toornament.com")
@@ -102,14 +106,14 @@ public class MatchReports extends Concept {
                 .addEncodedPathSegment(matchID)
                 .addEncodedPathSegment("reports");
         }
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),query.toString());
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), query.toString());
         Request request = client.getAuthenticatedRequestBuilder()
             .post(body)
             .url(url.build())
             .build();
 
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Reports.class));
         } catch (IOException | NullPointerException e) {
@@ -118,9 +122,9 @@ public class MatchReports extends Concept {
         }
     }
 
-    public Report updateReport(ReportsQuery query, String matchID, String reportID){
+    public Report updateReport(ReportsQuery query, String matchID, String reportID) {
         Builder url = new Builder();
-        if(client.getScope().contains(Scope.ORGANIZER_RESULT)){
+        if (client.getScope().contains(Scope.ORGANIZER_RESULT)) {
             url
                 .scheme("https")
                 .host("api.toornament.com")
@@ -133,13 +137,13 @@ public class MatchReports extends Concept {
                 .addEncodedPathSegment("reports")
                 .addEncodedPathSegment(reportID);
         }
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),query.toString());
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), query.toString());
         Request request = client.getAuthenticatedRequestBuilder()
             .patch(body)
             .url(url.build())
             .build();
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Reports.class));
         } catch (IOException | NullPointerException e) {

@@ -10,12 +10,16 @@ import lombok.Singular;
 @Setter
 @Builder
 public class RoundsQuery {
+
     @Singular
     private List<Long> stageIds;
+
     @Singular
     private List<Long> groupIds;
+
     @Singular
     List<Integer> stageNumbers;
+
     @Singular
     List<Integer> groupNumbers;
 

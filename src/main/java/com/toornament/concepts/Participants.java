@@ -5,34 +5,37 @@ import com.toornament.exception.ToornamentException;
 import com.toornament.model.Participant;
 import com.toornament.model.enums.Scope;
 import com.toornament.model.request.ParticipantQuery;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import okhttp3.HttpUrl;
 import okhttp3.HttpUrl.Builder;
 import okhttp3.MediaType;
 import okhttp3.Request;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import okhttp3.RequestBody;
 import org.slf4j.LoggerFactory;
 
 public class Participants extends Concept {
-    private String tournamentID;
+
+    private final String tournamentID;
+
     public Participants(ToornamentClient client, String tournamentID) {
         super(client);
         this.tournamentID = tournamentID;
         logger = LoggerFactory.getLogger(this.getClass());
     }
-    public List<Participant> getTeamParticipants(Map<String,String> header, ParticipantQuery parameters){
+
+    public List<Participant> getTeamParticipants(Map<String, String> header, ParticipantQuery parameters) {
         Request request = getRequestHelper(header, parameters);
         return getTeamParticipantsHelper(request);
     }
 
     //Intended for getting participants of non-team games like Hearthstone or Mortal Kombat.
-    public List<Participant> getParticipants(Map<String,String> header, ParticipantQuery parameters){
+    public List<Participant> getParticipants(Map<String, String> header, ParticipantQuery parameters) {
         Request request = getRequestHelper(header, parameters);
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody, mapper.getTypeFactory().constructCollectionType(List.class, Participant.class));
         } catch (IOException | NullPointerException e) {
             logger.error(e.getMessage());
@@ -40,7 +43,7 @@ public class Participants extends Concept {
         }
     }
 
-    public Participant getParticipant(String participantID){
+    public Participant getParticipant(String participantID) {
         HttpUrl.Builder urlBuilder = new HttpUrl.Builder()
             .scheme("https")
             .host("api.toornament.com")
@@ -51,7 +54,7 @@ public class Participants extends Concept {
             .addEncodedPathSegment("participants")
             .addEncodedPathSegment(participantID);
 
-        logger.debug("url: {}",urlBuilder.build().toString());
+        logger.debug("url: {}", urlBuilder.build().toString());
 
         Request request = client.getAuthenticatedRequestBuilder()
             .get()
@@ -63,17 +66,17 @@ public class Participants extends Concept {
 
     //Uses the Participant API to get other participants associated with the current user token. Requires participant:manage_participations for the scope
 
-    public List<Participant> getMyTeamParticipants(Map<String,String> header, Map<String,String> paramsMap) {
+    public List<Participant> getMyTeamParticipants(Map<String, String> header, Map<String, String> paramsMap) {
         Builder urlBuilder = new Builder();
-        logger.debug("Scopes: {}",client.getScope().toString());
-    if (client.getScope().contains(Scope.MANAGE_PARTICIPANTS)) {
-      urlBuilder.scheme("https")
-          .host("api.toornament.com")
-          .addEncodedPathSegment("participant")
-          .addEncodedPathSegment("v2")
-          .addEncodedPathSegment("me")
-          .addEncodedPathSegment("participants");
-            }
+        logger.debug("Scopes: {}", client.getScope().toString());
+        if (client.getScope().contains(Scope.MANAGE_PARTICIPANTS)) {
+            urlBuilder.scheme("https")
+                .host("api.toornament.com")
+                .addEncodedPathSegment("participant")
+                .addEncodedPathSegment("v2")
+                .addEncodedPathSegment("me")
+                .addEncodedPathSegment("participants");
+        }
         for (Map.Entry<String, String> params : paramsMap.entrySet()) {
             urlBuilder.addQueryParameter(params.getKey(), params.getValue());
         }
@@ -81,12 +84,13 @@ public class Participants extends Concept {
         Request request = client.getRequestBuilder()
             .get()
             .url(urlBuilder.build())
-            .addHeader("range",header.get("range"))
+            .addHeader("range", header.get("range"))
             .build();
 
         return getTeamParticipantsHelper(request);
     }
-    public Participant getTeamParticipantByID(String id){
+
+    public Participant getTeamParticipantByID(String id) {
 
         Builder url = participantHelper(id);
         Request request = client.getRequestBuilder()
@@ -97,9 +101,9 @@ public class Participants extends Concept {
         return TeamParticipanthelper(request, "Got IOException getting Team Participants");
     }
 
-    public Participant updateParticipant(String id){
+    public Participant updateParticipant(String id) {
         Builder url = participantHelper(id);
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),"{ \"checked_in\": true }");
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), "{ \"checked_in\": true }");
         Request request = client.getAuthenticatedRequestBuilder()
             .patch(body)
             .url(url.build())
@@ -109,7 +113,7 @@ public class Participants extends Concept {
 
     }
 
-    public Participant createParticipant(ParticipantQuery query){
+    public Participant createParticipant(ParticipantQuery query) {
         Builder url = new Builder();
         if (client.getScope().contains(Scope.ORGANIZER_PARTICIPANT)) {
             url
@@ -121,15 +125,15 @@ public class Participants extends Concept {
                 .addEncodedPathSegment(tournamentID)
                 .addEncodedPathSegment("participants");
         }
-        RequestBody body = RequestBody.create(MediaType.parse("application/json"),query.toString());
+        RequestBody body = RequestBody.create(MediaType.parse("application/json"), query.toString());
         Request request = client.getRequestBuilder()
             .post(body)
             .url(url.build())
             .build();
-        return TeamParticipanthelper(request,"Error creating new Participant");
+        return TeamParticipanthelper(request, "Error creating new Participant");
     }
 
-    public Integer deleteParticipant(String id){
+    public Integer deleteParticipant(String id) {
         Builder url = participantHelper(id);
         Request request = client.getAuthenticatedRequestBuilder()
             .delete()
@@ -141,7 +145,7 @@ public class Participants extends Concept {
 
     private Builder participantHelper(String id) {
         Builder url = new Builder();
-        logger.debug("Scopes: {}",client.getScope().toString());
+        logger.debug("Scopes: {}", client.getScope().toString());
         if (client.getScope().contains(Scope.MANAGE_PARTICIPANTS)) {
             url
                 .scheme("https")
@@ -167,7 +171,7 @@ public class Participants extends Concept {
 
     private Participant TeamParticipanthelper(Request request, String s) {
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructType(Participant.class));
         } catch (IOException | NullPointerException e) {
@@ -178,7 +182,7 @@ public class Participants extends Concept {
 
     private List<Participant> getTeamParticipantsHelper(Request request) {
         try {
-            String responseBody = client.executeRequest(request).body().string();
+            String responseBody = Objects.requireNonNull(client.executeRequest(request).body()).string();
             return mapper.readValue(responseBody,
                 mapper.getTypeFactory().constructCollectionType(List.class, Participant.class));
         } catch (IOException | NullPointerException e) {
@@ -197,8 +201,8 @@ public class Participants extends Concept {
             .addEncodedPathSegment(tournamentID)
             .addEncodedPathSegment("participants");
 
-        url.addQueryParameter("name",parameters.getName());
-        url.addQueryParameter("sort",parameters.getSort().toString());
+        url.addQueryParameter("name", parameters.getName());
+        url.addQueryParameter("sort", parameters.getSort().toString());
 
         return client.getRequestBuilder()
             .get()

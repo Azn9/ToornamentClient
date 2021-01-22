@@ -2,7 +2,7 @@ package com.toornament.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Attribute{
+public enum Attribute {
     EDIT("edit"),
     REPORT("report"),
     DELETE("delete"),
@@ -10,9 +10,12 @@ public enum Attribute{
     FILL("fill"),
     REGISTER("register");
 
-    Attribute(String name){this.name = name;}
+    private final String name;
 
-    private String name;
+    Attribute(String name) {
+        this.name = name;
+    }
+
     @JsonValue
     public String getName() {
         return name;

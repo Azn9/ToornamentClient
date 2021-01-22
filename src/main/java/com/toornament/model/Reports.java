@@ -12,22 +12,23 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Reports {
-    String note;
-    String user_id;
+
     @JsonAlias("custom_user_identifier")
     String customUserIdentifier;
+
     @JsonAlias("participant_id")
     String participantID;
-    String type;
-    String id;
+
     @JsonAlias("closed_author_id")
     String closedAuthorID;
-    Boolean closed;
+
+    String        note;
+    String        user_id;
+    String        type;
+    String        id;
+    Boolean       closed;
     LocalDateTime closed_at;
-    Report report;
-  public class Report {
-    List<Opponent> opponents;
-    }
+    Report        report;
 
     public String toString() {
         try {
@@ -36,6 +37,10 @@ public class Reports {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    public class Report {
+        List<Opponent> opponents;
     }
 
 }
